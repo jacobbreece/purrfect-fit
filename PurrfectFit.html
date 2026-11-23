@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Purrfect Fit 🐾</title>
+<link rel="icon" href="PurrfectFit.ico">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#ff7eb6">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Purrfect Fit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E🐱%3C/text%3E%3C/svg%3E">
+<style>
+:root{--pink:#ff7eb6;--pink2:#ffb3d4;--bg:#fff0f7;--card:#fff;--ink:#5a2a47;--lav:#c9b6ff;--mint:#a8ecd0;--gold:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;background:linear-gradient(#ffe3f1,#f1e6ff);color:var(--ink);min-height:100vh}
+#app{max-width:460px;margin:0 auto;padding:12px 14px 180px}
+header{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.pill{background:#fff;border-radius:99px;padding:6px 12px;box-shadow:0 2px 6px #ff7eb633;font-size:14px}
+.card{background:var(--card);border-radius:22px;padding:16px;margin:12px 0;box-shadow:0 4px 14px #ff7eb622}
+h2{margin:0 0 8px;font-size:18px}
+button{font:inherit;border:0;border-radius:99px;padding:10px 16px;background:var(--pink);color:#fff;font-weight:700;cursor:pointer;transition:transform .1s}
+button:active{transform:scale(.95)}
+button.alt{background:var(--lav)} button.ghost{background:#ffe3f1;color:var(--ink)}
+input,select{font:inherit;padding:10px 12px;border:2px solid var(--pink2);border-radius:14px;width:100%;margin:4px 0;background:#fff;color:var(--ink)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar{height:14px;background:#ffe3f1;border-radius:99px;overflow:hidden}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--pink),var(--lav));transition:width .5s}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:center;gap:2px;padding:6px;box-shadow:0 -4px 14px #ff7eb633}
+nav button{background:none;color:var(--ink);padding:6px 10px;font-size:12px;border-radius:14px;display:flex;flex-direction:column;align-items:center;min-width:56px}
+nav button span{font-size:22px}
+nav button.on{background:#ffe3f1;color:var(--pink)}
+.pet{text-align:center;position:relative}
+.pet .bun{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 4px 8px #ff7eb655);font-size:92px;line-height:1;display:inline-block;animation:bob 2.4s ease-in-out infinite;cursor:pointer;position:relative}
+.pet .hat{position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:44px}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.pet .bun.dance{animation:dance 2.6s ease-in-out 1}
+@keyframes dance{0%{transform:rotate(0)}10%{transform:translateY(-22px) rotate(-14deg)}20%{transform:translateY(0) rotate(0)}30%{transform:translateY(-22px) rotate(14deg)}40%{transform:translateY(0) rotate(0)}55%{transform:scale(1.15,.9) rotate(-8deg)}65%{transform:scale(.9,1.15) rotate(8deg)}75%{transform:translateY(-30px) rotate(360deg)}90%{transform:translateY(0) rotate(360deg)}100%{transform:rotate(360deg)}}
+/* roaming kitten */
+#kitty{position:fixed;left:0;bottom:60px;width:140px;height:100px;z-index:6;pointer-events:none;will-change:transform}
+#kdance{position:relative;width:140px;height:100px;pointer-events:auto;cursor:pointer;transform-origin:70px 95px}
+#kflip{width:140px;height:100px}
+#khat{position:absolute;top:-14px;font-size:34px;pointer-events:none}
+#ksay{position:absolute;bottom:104px;left:50%;transform:translateX(-50%);background:#fff;border:2px solid var(--pink2);border-radius:14px;padding:4px 10px;font-size:13px;font-weight:700;white-space:nowrap;opacity:0;transition:opacity .25s;pointer-events:none}
+#ksay.on{opacity:1}
+#kdance.walk{animation:kbob .42s ease-in-out infinite}
+#kdance.pounce{animation:kpounce .5s ease-out 1}
+#kdance.dance{animation:dance 2.6s ease-in-out 1}
+@keyframes kbob{50%{transform:translateY(-3px)}}
+@keyframes kpounce{0%{transform:scale(1.1,.85)}50%{transform:translate(0,-26px) scale(.95,1.1)}100%{transform:none}}
+.leg.bf{transform-origin:57px 66px}.leg.ff{transform-origin:95px 66px}.leg.bl{transform-origin:40px 66px}.leg.fl{transform-origin:82px 66px}
+.walk .leg.lA{animation:lg .42s ease-in-out infinite}.walk .leg.lB{animation:lg .42s ease-in-out infinite -.21s}
+@keyframes lg{0%,100%{transform:rotate(-26deg)}50%{transform:rotate(26deg)}}
+.tail{transform-origin:28px 58px;animation:tl 1.8s ease-in-out infinite}
+@keyframes tl{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(12deg)}}
+.eyes{transform-origin:106px 43px;animation:blink 4.5s infinite}
+@keyframes blink{0%,95%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+/* gym mode: gear + props + per-activity animation */
+.gear,.prop{display:none}
+#kitty.fit .gear{display:inline}
+#kitty[data-act=run] .p-tread,#kitty[data-act=walk] .p-tread,#kitty[data-act=strength] .p-dumb,#kitty[data-act=yoga] .p-mat,#kitty[data-act=stretch] .p-mat,#kitty[data-act=cycle] .p-bike,#kitty[data-act=swim] .p-swim{display:inline}
+#kdance.act{transform-origin:70px 95px}
+#kitty[data-act=strength] #kdance.act{animation:ksquat 1.2s ease-in-out infinite alternate}
+#kitty[data-act=run] #kdance.act{animation:kbob .26s ease-in-out infinite}
+#kitty[data-act=walk] #kdance.act{animation:kbob .55s ease-in-out infinite}
+#kitty[data-act=cycle] #kdance.act{animation:kbob .6s ease-in-out infinite}
+#kitty[data-act=swim] #kdance.act{animation:kswim 1.2s ease-in-out infinite alternate}
+#kitty[data-act=yoga] #kdance.act{animation:kyoga 4s ease-in-out infinite}
+#kitty[data-act=stretch] #kdance.act{animation:kstretch 3.2s ease-in-out infinite}
+#kitty[data-act=dance] #kdance.act{animation:dance 2.6s ease-in-out infinite}
+@keyframes ksquat{to{transform:translateY(5px) scale(1.03,.95)}}
+@keyframes kswim{to{transform:translateY(4px) rotate(-3deg)}}
+@keyframes kyoga{50%{transform:translateY(-8px) scale(1.05) rotate(-3deg)}}
+@keyframes kstretch{0%,100%{transform:none}40%,60%{transform:rotate(9deg) scale(1.1,.88)}}
+#kitty[data-act=run] .leg.lA{animation:lg .26s ease-in-out infinite}#kitty[data-act=run] .leg.lB{animation:lg .26s ease-in-out infinite -.13s}
+#kitty[data-act=walk] .leg.lA{animation:lg .55s ease-in-out infinite}#kitty[data-act=walk] .leg.lB{animation:lg .55s ease-in-out infinite -.27s}
+#kitty[data-act=cycle] .leg.lA{animation:lg .6s ease-in-out infinite}#kitty[data-act=cycle] .leg.lB{animation:lg .6s ease-in-out infinite -.3s}
+#kitty[data-act=swim] .leg.lA{animation:lg .45s ease-in-out infinite}#kitty[data-act=swim] .leg.lB{animation:lg .45s ease-in-out infinite -.22s}
+.belt{animation:belt .3s linear infinite}#kitty[data-act=walk] .belt{animation-duration:.7s}
+@keyframes belt{to{stroke-dashoffset:-16}}
+.db{animation:curl 1.2s ease-in-out infinite alternate}
+@keyframes curl{to{transform:translateY(-26px)}}
+.spin{animation:sp .6s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.wave{animation:wv 1.2s linear infinite}@keyframes wv{to{transform:translateX(-20px)}}
+#ball{position:fixed;left:0;bottom:60px;width:30px;height:30px;font-size:26px;line-height:30px;text-align:center;z-index:5;cursor:pointer;user-select:none}
+#arena{position:relative;height:300px;margin-top:10px;background:#fff7fb;border:2px dashed var(--pink2);border-radius:18px;overflow:hidden}
+.fall{position:absolute;top:-44px;font-size:34px;cursor:pointer;user-select:none;animation:fall linear forwards}
+@keyframes fall{to{top:310px}}
+.opt{display:block;width:100%;margin:6px 0;text-align:left;background:#ffe3f1;color:var(--ink)}
+.opt.good{background:var(--mint)}.opt.bad{background:#ffb3b3}
+.bub{border-radius:50%;aspect-ratio:1;background:radial-gradient(#fff,var(--lav));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:var(--ink);cursor:pointer;user-select:none}
+.bub.gone{visibility:hidden}
+.pad{opacity:.45;transition:all .15s}.pad.lit{opacity:1;transform:scale(1.05);box-shadow:0 0 18px #fff}
+.bubble{background:#ffe3f1;border-radius:16px;padding:8px 12px;display:inline-block;margin-top:6px;font-size:14px}
+.quest{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #ffd0e6}
+.quest:last-child{border:0}
+.quest .ck{font-size:22px}.done{opacity:.55;text-decoration:line-through}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{background:#ffe3f1;color:var(--ink);padding:7px 12px;font-size:14px}
+.chip.on{background:var(--pink);color:#fff}
+.glass{font-size:30px;cursor:pointer;filter:grayscale(1) opacity(.4)}.glass.f{filter:none}
+.mood{font-size:36px;cursor:pointer;padding:4px;border-radius:14px}.mood.on{background:var(--pink2)}
+.log{font-size:14px;padding:6px 0;border-bottom:1px dashed #ffd0e6;display:flex;justify-content:space-between}
+#breath{width:140px;height:140px;border-radius:50%;margin:16px auto;background:radial-gradient(var(--lav),var(--pink2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;transition:transform 4s ease-in-out}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{aspect-ratio:1;border-radius:16px;background:var(--lav);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;user-select:none}
+.tile.up{background:#fff;border:2px solid var(--pink2)}.tile.ok{background:var(--mint)}
+.badge{display:inline-block;text-align:center;width:30%;margin:6px 1%;vertical-align:top;font-size:12px}
+.badge .e{font-size:34px}.badge.lock{filter:grayscale(1) opacity(.35)}
+.shop{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-90px);background:var(--pink);color:#fff;padding:10px 18px;border-radius:99px;font-weight:700;transition:transform .4s;z-index:9;box-shadow:0 4px 14px #0003;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+.small{font-size:13px;opacity:.75}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="ball">🧶</div>
+<div id="kitty">
+  <div id="ksay"></div>
+  <div id="kdance">
+    <div id="kflip">
+      <svg viewBox="0 0 140 100" width="140" height="100" aria-label="Fluffy kitten">
+        <defs><filter id="fuzz" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
+        <g class="tail"><path d="M28 58 Q-2 54 6 26 Q10 12 22 20" fill="none" stroke="#ffb86b" stroke-width="12" stroke-linecap="round" filter="url(#fuzz)"/></g>
+        <g class="prop p-tread"><rect x="8" y="91" width="126" height="9" rx="4.5" fill="#5a2a47"/><path class="belt" d="M14 95.5 H128" stroke="#fff" stroke-width="2" stroke-dasharray="6 10" stroke-linecap="round"/></g>
+        <rect class="prop p-mat" x="12" y="91" width="118" height="8" rx="4" fill="#c9b6ff"/>
+        <g class="prop p-bike" fill="none" stroke="#7a3b5a" stroke-width="3" stroke-linecap="round"><circle cx="30" cy="80" r="14"/><circle cx="108" cy="80" r="14"/><path d="M30 80 L62 62 L108 80 M62 62 L96 58"/>
+          <g class="spin" style="transform-origin:30px 80px"><path d="M30 68 V92 M18 80 H42" stroke-width="1.5"/></g><g class="spin" style="transform-origin:108px 80px"><path d="M108 68 V92 M96 80 H120" stroke-width="1.5"/></g></g>
+        <g class="leg lA bf"><rect x="52" y="64" width="11" height="26" rx="5.5" fill="#f2b87a"/><ellipse cx="57.5" cy="90" rx="8" ry="4.5" fill="#ffe6cc"/><rect class="gear" x="52" y="72" width="11" height="4" fill="#ff7eb6"/><ellipse class="gear" cx="57.5" cy="90" rx="8.5" ry="4.8" fill="#ff7eb6"/><path class="gear" d="M52 90 h11" stroke="#fff" stroke-width="1.5"/></g>
+        <g class="leg lB ff"><rect x="90" y="64" width="11" height="26" rx="5.5" fill="#f2b87a"/><ellipse cx="95.5" cy="90" rx="8" ry="4.5" fill="#ffe6cc"/><rect class="gear" x="90" y="72" width="11" height="4" fill="#ff7eb6"/><ellipse class="gear" cx="95.5" cy="90" rx="8.5" ry="4.8" fill="#ff7eb6"/><path class="gear" d="M90 90 h11" stroke="#fff" stroke-width="1.5"/></g>
+        <g filter="url(#fuzz)">
+          <ellipse cx="62" cy="58" rx="42" ry="23" fill="#ffcf94"/>
+          <ellipse cx="62" cy="68" rx="30" ry="11" fill="#fff4e6"/>
+          <path d="M44 38 q3 8 0 14 M58 36 q3 9 0 16 M72 37 q3 8 0 15" stroke="#f2a45b" stroke-width="4" stroke-linecap="round" fill="none"/>
+        </g>
+        <g class="gear"><path d="M48 38 Q62 32 78 38 L80 70 Q62 76 46 70Z" fill="#ff7eb6"/><path d="M52 44 Q62 41 74 44 M52 52 Q62 49 76 52" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>
+        <g class="leg lB bl"><rect x="34" y="64" width="12" height="26" rx="6" fill="#ffcf94"/><ellipse cx="40" cy="90" rx="8.5" ry="4.8" fill="#fff4e6"/><rect class="gear" x="34" y="72" width="12" height="4" fill="#ff7eb6"/><ellipse class="gear" cx="40" cy="90" rx="9" ry="5" fill="#ff7eb6"/><path class="gear" d="M34 90 h12" stroke="#fff" stroke-width="1.5"/></g>
+        <g class="leg lA fl"><rect x="76" y="64" width="12" height="26" rx="6" fill="#ffcf94"/><ellipse cx="82" cy="90" rx="8.5" ry="4.8" fill="#fff4e6"/><rect class="gear" x="76" y="72" width="12" height="4" fill="#ff7eb6"/><ellipse class="gear" cx="82" cy="90" rx="9" ry="5" fill="#ff7eb6"/><path class="gear" d="M76 90 h12" stroke="#fff" stroke-width="1.5"/></g>
+        <g filter="url(#fuzz)">
+          <path d="M86 30 L90 4 L108 22Z" fill="#ffcf94"/><path d="M90 24 L92 11 L100 21Z" fill="#ffb3c8"/>
+          <path d="M104 21 L120 4 L126 32Z" fill="#ffcf94"/><path d="M110 22 L119 12 L121 26Z" fill="#ffb3c8"/>
+          <circle cx="106" cy="44" r="23" fill="#ffcf94"/>
+          <path d="M84 48 l-8 3 l8 3 l-7 5 l10 -2z" fill="#ffcf94"/><path d="M128 48 l8 3 l-8 3 l7 5 l-10 -2z" fill="#ffcf94"/>
+          <path d="M96 27 q3 6 0 10 M106 24 q2 6 0 10 M116 27 q-3 6 0 10" stroke="#f2a45b" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </g>
+        <g class="gear"><path d="M85 36 Q106 18 127 36" fill="none" stroke="#ff7eb6" stroke-width="6" stroke-linecap="round"/><path d="M120 30 l8 -6 l1 10z M120 30 l9 4" fill="#ff7eb6"/></g>
+        <g class="eyes"><ellipse cx="97" cy="43" rx="4" ry="5" fill="#3b2340"/><ellipse cx="115" cy="43" rx="4" ry="5" fill="#3b2340"/>
+          <circle cx="98.5" cy="41" r="1.6" fill="#fff"/><circle cx="116.5" cy="41" r="1.6" fill="#fff"/></g>
+        <circle cx="91" cy="53" r="4" fill="#ff9ec7" opacity=".55"/><circle cx="121" cy="53" r="4" fill="#ff9ec7" opacity=".55"/>
+        <path d="M103 50 h6 l-3 4z" fill="#ff7eb6"/>
+        <path d="M106 54 q-3 4 -6 1 M106 54 q3 4 6 1" stroke="#7a3b5a" fill="none" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M90 52 l-14 -3 M90 55 l-14 3 M122 52 l14 -3 M122 55 l14 3" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".9"/>
+      <g class="prop p-swim"><path class="wave" d="M-20 74 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 V100 H-20Z" fill="#8fd3ff" opacity=".65"/></g>
+        <g class="prop p-dumb"><g class="db"><path d="M108 76 H136" stroke="#5a2a47" stroke-width="3.5" stroke-linecap="round"/><rect x="104" y="68" width="6" height="16" rx="2" fill="#7a3b5a"/><rect x="134" y="68" width="6" height="16" rx="2" fill="#7a3b5a"/></g></g>
+      </svg>
+    </div>
+    <span id="khat"></span>
+  </div>
+</div>
+<div id="toast"></div>
+<nav id="nav"></nav>
+<script>
+// ---------- data ----------
+const KEY='glowup.v1';
+const today=()=>new Date().toLocaleDateString('en-CA');
+const dayOffset=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('en-CA')};
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{name:'Bloom',xp:0,gems:0,streak:0,last:'',days:{},owned:[],hat:'',badges:[],bonusDays:[]};
+S.profile=S.profile||{age:'',ft:'',inch:'',sex:'f',act:1.375,goal:0,calOverride:''};S.weights=S.weights||[];
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+// targets: Mifflin-St Jeor (lbs/inches in, metric inside). Estimates only, not medical advice.
+const mealCal=m=>+(m.cal??m.c)||0;
+function lastWeight(){return S.weights.length?S.weights[S.weights.length-1].w:null}
+function targets(){
+  const p=S.profile,w=lastWeight();let cal=null,auto=false;
+  if(w&&p.age&&p.ft){
+    const kg=w*0.45359,cm=((+p.ft)*12+(+p.inch||0))*2.54;
+    const bmr=10*kg+6.25*cm-5*(+p.age)+(p.sex==='m'?5:-161);
+    cal=Math.round((bmr*p.act+(+p.goal))/10)*10;cal=Math.max(cal,p.sex==='m'?1500:1200);auto=true;
+  }
+  if(+p.calOverride>0){cal=+p.calOverride;auto=false}
+  if(!cal)return null;
+  return{cal,auto,p:Math.round(cal*.25/4),c:Math.round(cal*.45/4),f:Math.round(cal*.30/9),fi:25};
+}
+function totals(d){return d.meals.reduce((a,m)=>({cal:a.cal+mealCal(m),p:a.p+(+m.p||0),c:a.c+(+m.cb||0),f:a.f+(+m.f||0),fi:a.fi+(+m.fi||0)}),{cal:0,p:0,c:0,f:0,fi:0})}
+const D=()=>S.days[today()]||(S.days[today()]={workouts:[],meals:[],water:0,mood:null,gratitude:'',breath:0,games:0,plays:{}});
+const level=xp=>Math.floor(Math.sqrt(xp/40))+1;
+const lvlStart=l=>(l-1)**2*40;
+const TITLES=['Sprout','Sparkle','Starlet','Glow Getter','Icon','Goddess','Legend'];
+
+const AFFIRM=["You are doing better than you think. 💕","Strong, soft, and unstoppable. 🌸","Rest is productive too. 🌙","Your body is your home. Be kind to it. 🏡","Progress, not perfection. ✨","You deserve to feel good today. 🦋","Small steps still count. 🐾","You are enough, exactly as you are. 💖"];
+const WORKOUTS=[['💃','Dance',6],['🧘','Yoga',4],['🏃‍♀️','Run',9],['🚶‍♀️','Walk',4],['🏋️‍♀️','Strength',8],['🚴‍♀️','Cycle',7],['🏊‍♀️','Swim',9],['🤸‍♀️','Stretch',3]];
+const FOODS=['🥦 Veggies','🍓 Fruit','🍗 Protein','🍚 Carbs','🥑 Healthy fat','🍫 Treat'];
+const MOODS=[['😭','Rough'],['😟','Low'],['😐','Okay'],['😊','Good'],['🥰','Great']];
+const SHOP=[['🎀','Bow',20],['👑','Crown',60],['🌸','Flower',30],['🕶️','Shades',40],['🎩','Top hat',50],['👒','Sun hat',35]];
+const BADGES=[
+ ['🌱','First Step',s=>Object.values(s.days).some(d=>d.workouts.length)],
+ ['🔥','3-Day Streak',s=>s.streak>=3],['💎','7-Day Streak',s=>s.streak>=7],
+ ['💧','Hydration Hero',s=>Object.values(s.days).some(d=>d.water>=8)],
+ ['🥗','Fuel Fan',s=>Object.values(s.days).filter(d=>d.meals.length).length>=3],
+ ['🧘','Zen Mode',s=>Object.values(s.days).some(d=>d.breath>0)],
+ ['🃏','Game Girl',s=>Object.values(s.days).some(d=>d.games>0)],
+ ['⭐','Level 5',s=>level(s.xp)>=5],['👑','Perfect Day',s=>s.bonusDays.length>0]];
+
+// ---------- core ----------
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+function touchStreak(){
+  const t=today();if(S.last===t)return;
+  S.streak=S.last===dayOffset(-1)?S.streak+1:1;S.last=t;
+}
+function award(xp,gems=0,msg=''){
+  const before=level(S.xp);touchStreak();
+  S.xp+=xp;S.gems+=gems;
+  let m=`${msg} +${xp} XP${gems?` +${gems}💎`:''}`;
+  const after=level(S.xp);if(after>before)m+=`\n🎉 Level ${after}!`;
+  const q=quests();
+  if(q.every(x=>x.done)&&!S.bonusDays.includes(today())){S.bonusDays.push(today());S.xp+=30;S.gems+=10;m+='\n🌟 Perfect day! +30 XP +10💎'}
+  BADGES.forEach(([e,n,f])=>{if(!S.badges.includes(n)&&f(S)){S.badges.push(n);m+=`\n${e} Badge: ${n}`}});
+  save();toast(m);render();
+}
+function quests(){const d=D();return[
+ {e:'💃',t:'Move your body',done:d.workouts.length>0},
+ {e:'💧',t:'Drink 8 glasses of water',done:d.water>=8},
+ {e:'🥗',t:'Log 3 meals/snacks',done:d.meals.length>=3},
+ {e:'💭',t:'Mood check-in',done:d.mood!==null},
+ {e:'🌬️',t:'Breathe for a minute',done:d.breath>0},
+ {e:'📝',t:'Write one gratitude',done:!!d.gratitude}]}
+
+// ---------- views ----------
+let tab='home';
+const TABS=[['home','🏠','Home'],['move','💃','Move'],['fuel','🥗','Fuel'],['mind','🧘','Mind'],['play','🎮','Play'],['me','👑','Me']];
+function petMood(){const n=quests().filter(q=>q.done).length;return n>=5?['🐱','So happy! Let\'s sparkle!']:n>=3?['🐱','You\'re doing great!']:n>=1?['🐱','Nice start, bestie!']:['🐱','I missed you! Let\'s do one thing today 💕']}
+const hdr=()=>{const l=level(S.xp),a=lvlStart(l),b=lvlStart(l+1);return`
+<div style="text-align:center;font-size:24px;font-weight:800;color:var(--pink);margin:2px 0 8px">🐾 Purrfect Fit</div>
+<header><span class="pill">🔥 ${S.streak}</span><span class="pill">⭐ Lv ${l} ${TITLES[Math.min(l-1,6)]}</span><span class="pill">💎 ${S.gems}</span></header>
+<div class="bar" style="margin:10px 0 0"><div style="width:${(S.xp-a)/(b-a)*100}%"></div></div><div class="small" style="text-align:center">${S.xp-a}/${b-a} XP to next level</div>`};
+
+const views={
+home(){const[,msg]=petMood();const q=quests();const af=AFFIRM[new Date().getDate()%AFFIRM.length];return`
+<div class="card pet"><div style="font-size:30px;letter-spacing:6px">🐾🐾🐾</div><div class="small">${S.name} is roaming the page. Tap her or play with the yarn!</div>
+<div><span class="bubble" id="say">${S.name}: ${msg}</span></div></div>
+<div class="card"><h2>Today's quests (${q.filter(x=>x.done).length}/${q.length})</h2>
+${q.map(x=>`<div class="quest ${x.done?'done':''}"><span class="ck">${x.done?'✅':x.e}</span>${x.t}</div>`).join('')}
+<div class="small" style="margin-top:8px">Finish all for a Perfect Day bonus 🌟</div></div>
+<div class="card"><h2>Daily sparkle</h2>${af}</div>`},
+move(){const d=D();return`<div class="card"><h2>Move 💃</h2><div class="small">Pick what you did and how long. Any movement counts!</div>
+<div class="chips" id="wk">${WORKOUTS.map((w,i)=>`<button class="chip ${selW===i?'on':''}" onclick="selW=${i};render();kAct(true)">${w[0]} ${w[1]}<br><span class="cest" style="font-size:11px"></span></button>`).join('')}</div>
+<input id="mins" type="number" min="1" max="300" placeholder="Minutes" value="${selMin}" oninput="selMin=+this.value;upCb()">
+<div class="bubble" id="cb" style="margin:6px 0"></div>
+<div class="small">${lastWeight()?`Estimated from your latest weight (${lastWeight()} lbs).`:'Using 140 lbs. Log your weight on the Fuel tab for a personal estimate.'} Rough guess only: real burn varies with intensity and fitness.</div>
+<button onclick="logWorkout()" style="width:100%;margin-top:8px">Log it! ✨</button></div>
+<div class="card"><h2>Today</h2>${d.workouts.length?d.workouts.map(w=>`<div class="log"><span>${w.e} ${w.n}</span><span>${w.m} min${w.cal?` · ~${w.cal} cal`:''}</span></div>`).join('')+`<div class="small" style="margin-top:6px">Total: ${d.workouts.reduce((a,w)=>a+w.m,0)} min · ~${d.workouts.reduce((a,w)=>a+(w.cal||0),0)} cal burned 🔥</div>`:'<div class="small">Nothing yet. Even 5 minutes counts 💕</div>'}</div>`},
+fuel(){const d=D(),T=targets(),t=totals(d),p=S.profile;
+ const mb=(label,v,goal,unit,color)=>`<div style="margin:8px 0"><div class="row" style="justify-content:space-between;font-size:14px"><b>${label}</b><span>${Math.round(v)}${goal?' / '+goal:''} ${unit}</span></div><div class="bar"><div style="width:${goal?Math.min(100,v/goal*100):0}%;background:${color}"></div></div></div>`;
+ const wts=S.weights,lw=lastWeight();
+ return`<div class="card"><h2>Today's fuel 🔥</h2>
+${(b=>b?`<div class="small">Activity today: ~${b} cal burned 💪</div>`:'')(d.workouts.reduce((a,w)=>a+(w.cal||0),0))}
+${T?`<div class="small">Daily target ${T.cal} cal ${T.auto?'(estimated from your profile)':'(your custom number)'}</div>`:'<div class="small">Set up your profile below to get a daily calorie target.</div>'}
+${mb('Calories',t.cal,T&&T.cal,'cal','linear-gradient(90deg,#ff7eb6,#ffb3d4)')}
+${mb('Protein',t.p,T&&T.p,'g','#c9b6ff')}${mb('Carbs',t.c,T&&T.c,'g','#ffd166')}${mb('Fats',t.f,T&&T.f,'g','#a8ecd0')}${mb('Fiber',t.fi,T&&T.fi,'g','#9be15d')}
+${T&&t.cal>T.cal?'<div class="small">Over target today. That is okay, tomorrow is a fresh start 💗</div>':''}</div>
+<div class="card"><h2>Water 💧</h2><div>${[...Array(8)].map((_,i)=>`<span class="glass ${i<d.water?'f':''}" onclick="sip(${i})">🥤</span>`).join('')}</div><div class="small">${d.water}/8 glasses</div></div>
+<div class="card"><h2>Add food 🍓</h2>
+<input id="fname" list="flist" placeholder="What did you eat? (try banana)" oninput="foodPick()" autocomplete="off"><datalist id="flist">${FOODDB.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</datalist>
+<div class="row"><input id="fsv" type="number" min="0.1" step="any" value="1" title="Amount" oninput="foodPick()" style="width:34%"><select id="fu" onchange="unitChg()" style="width:60%"><option value="sv">serving(s)</option><option value="g">grams (g)</option><option value="oz">ounces (oz)</option></select></div>
+<button class="alt" onclick="estimate()" style="width:100%;margin:4px 0">✨ Estimate macros</button>
+<div class="small" id="fhint" style="margin:4px 0"></div>
+<div class="chips">${FOODS.map((f,i)=>`<button class="chip ${selF.includes(i)?'on':''}" onclick="togF(${i})">${f}</button>`).join('')}</div>
+<div class="row"><input id="fp" type="number" min="0" placeholder="Protein g" style="width:48%"><input id="fcb" type="number" min="0" placeholder="Carbs g" style="width:48%"></div>
+<div class="row"><input id="ff" type="number" min="0" placeholder="Fats g" style="width:48%"><input id="ffi" type="number" min="0" placeholder="Fiber g" style="width:48%"></div>
+<input id="fcal" type="number" min="0" placeholder="Calories (blank = estimate from macros)">
+<button onclick="logMeal()" style="width:100%;margin-top:6px">Add 🍽️</button></div>
+<div class="card"><h2>Today's log</h2>${d.meals.length?d.meals.map((m,i)=>`<div class="log"><span>${m.n}${m.amt?` <span class="small">(${m.amt})</span>`:''} <span class="small">${(m.t||[]).map(i=>FOODS[i].split(' ')[0]).join('')}<br>${m.est?'~':''}P${Math.round(+m.p||0)} C${Math.round(+m.cb||0)} F${Math.round(+m.f||0)} Fi${Math.round(+m.fi||0)}</span></span><span>${mealCal(m)} cal <button class="ghost" style="padding:2px 8px" onclick="delMeal(${i})">✕</button></span></div>`).join(''):'<div class="small">No meals logged yet. No guilt, just awareness 💗</div>'}</div>
+<div class="card"><h2>Weight ⚖️</h2>
+<div class="small">${lw?`Latest: <b>${lw} lbs</b> (${wts[wts.length-1].d})`:'No entries yet.'}${wts.length>1?` · Change since first: ${(lw-wts[0].w>0?'+':'')+(lw-wts[0].w).toFixed(1)} lbs`:''}</div>
+${spark()}
+<div class="row"><input id="wt" type="number" step="0.1" min="0" placeholder="Weight (lbs)" style="flex:1"><button onclick="logWeight()">Save</button></div>
+<div class="small">Weigh in whenever you like. Trends matter more than any one day.</div></div>
+<div class="card"><h2>Profile & targets 🎯</h2>
+<div class="row"><input id="pa" type="number" placeholder="Age" value="${p.age}" style="width:48%">
+<select id="ps" style="width:48%"><option value="f" ${p.sex==='f'?'selected':''}>Female</option><option value="m" ${p.sex==='m'?'selected':''}>Male</option></select></div>
+<div class="row"><input id="pf" type="number" placeholder="Height ft" value="${p.ft}" style="width:48%"><input id="pi" type="number" placeholder="in" value="${p.inch}" style="width:48%"></div>
+<select id="pact"><option value="1.2" ${p.act==1.2?'selected':''}>Mostly sitting</option><option value="1.375" ${p.act==1.375?'selected':''}>Light activity (1-3 days/wk)</option><option value="1.55" ${p.act==1.55?'selected':''}>Moderate (3-5 days/wk)</option><option value="1.725" ${p.act==1.725?'selected':''}>Very active (6-7 days/wk)</option></select>
+<select id="pg"><option value="-350" ${p.goal==-350?'selected':''}>Gentle fat loss</option><option value="0" ${p.goal==0?'selected':''}>Maintain</option><option value="250" ${p.goal==250?'selected':''}>Build / gain</option></select>
+<input id="pco" type="number" placeholder="Or set your own daily calories" value="${p.calOverride}">
+<button onclick="saveProfile()" style="width:100%;margin-top:6px">Save profile</button>
+<div class="small" style="margin-top:6px">Targets use the Mifflin-St Jeor estimate with a 25% protein / 45% carb / 30% fat split and 25g fiber. Needs a logged weight too. These are general estimates, not medical advice. A doctor or dietitian can tailor them to you.</div></div>`},
+mind(){const d=D();return`<div class="card"><h2>How are you feeling? 💭</h2><div class="row" style="justify-content:space-around">${MOODS.map((m,i)=>`<div style="text-align:center"><div class="mood ${d.mood===i?'on':''}" onclick="setMood(${i})">${m[0]}</div><div class="small">${m[1]}</div></div>`).join('')}</div>
+${d.mood!==null&&d.mood<=1?'<div class="bubble" style="margin-top:8px">Sending a hug 🫂 Try the breathing below. Talking to someone you trust can help too.</div>':''}</div>
+<div class="card"><h2>Breathe 🌬️</h2><div class="small">3 slow breaths. In for 4, out for 4.</div><div id="breath">Ready?</div><div style="text-align:center"><button class="alt" onclick="breathe()">Start</button></div></div>
+<div class="card"><h2>Gratitude 📝</h2><input id="grat" placeholder="One thing I'm grateful for..." value="${d.gratitude.replace(/"/g,'&quot;')}"><button onclick="saveGrat()" style="width:100%;margin-top:6px">Save 💌</button></div>`},
+play(){
+ if(!game){const d=D(),pl=d.plays||{};const g=(k,e,n,desc)=>`<div class="shop"><span style="font-size:15px"><b>${e} ${n}</b><br><span class="small">${desc}</span></span><span style="text-align:right"><button onclick="game='${k}';tv=null;ws=null;rx=null;render()">Play</button><div class="small">${k==='spin'?(pl.spin?'used':'1 free'):(3-(pl[k]||0))+' rewards left'}</div></span></div>`;
+  return`<div class="card"><h2>Game room �</h2><div class="small">Rewards reset daily. Playing is always free.</div>
+${g('mm','🃏','Memory Match','Find all the pairs')}${g('catch','💖','Heart Catch','Tap hearts, dodge rain clouds (20s)')}${g('trivia','🧠','Wellness Trivia','5 quick questions')}${g('bubble','🫧','Bubble Pop','Pop bubbles in number order')}${g('simon','🎵','Sparkle Sequence','Repeat the growing pattern')}${g('whack','🐭','Whack-a-Mouse','Tap mice, spare the puppy (20s)')}${g('scramble','🔤','Word Scramble','Unscramble wellness words')}${g('react','⚡','Quick Paws','Test your reaction speed')}${g('spin','🎡','Lucky Spin','One free spin a day')}</div>`}
+ const back=`<button class="ghost" onclick="stopCatch();game=null;render()" style="margin-bottom:8px">← Games</button>`;
+ if(game==='mm')return`<div class="card">${back}<h2>Memory Match 🃏</h2><div class="small">Fewer moves = more gems!</div><div id="mm" class="grid" style="margin:10px 0"></div><div class="row"><span id="mv" class="pill">Moves: 0</span><button onclick="startMM()">New game</button></div></div>`;
+ if(game==='catch')return`<div class="card">${back}<h2>Heart Catch 💖</h2><div class="row"><span class="pill" id="csc">Score: 0</span><span class="pill" id="ctm">20s</span><button onclick="startCatch()">Start</button></div><div id="arena"></div></div>`;
+ if(game==='trivia')return`<div class="card">${back}<h2>Wellness Trivia 🧠</h2><div id="tv"></div></div>`;
+ if(game==='bubble')return`<div class="card">${back}<h2>Bubble Pop 🫧</h2><div class="small">Tap 1, 2, 3... in order, fast!</div><div class="row" style="margin:6px 0"><span class="pill" id="bt">0.0s</span><button onclick="startBubble()">New game</button></div><div id="bb" class="grid"></div></div>`;
+ if(game==='simon')return`<div class="card">${back}<h2>Sparkle Sequence 🎵</h2><div class="row" style="margin-bottom:8px"><span class="pill" id="smmsg">Press start</span><button onclick="startSimon()">Start</button></div><div class="grid" style="grid-template-columns:1fr 1fr">${[0,1,2,3].map(i=>`<div class="tile pad" id="sp${i}" style="background:${SC[i]};aspect-ratio:1.3" onclick="tapSimon(${i})"></div>`).join('')}</div></div>`;
+ if(game==='whack')return`<div class="card">${back}<h2>Whack-a-Mouse 🐭</h2><div class="row" style="margin-bottom:8px"><span class="pill" id="whs">Score: 0</span><span class="pill" id="wht">20s</span><button onclick="startWhack()">Start</button></div><div class="grid" style="grid-template-columns:repeat(3,1fr)">${[...Array(9)].map((_,i)=>`<div class="tile" id="wc${i}" style="background:#ffe3f1" onpointerdown="tapWhack(${i})">🕳️</div>`).join('')}</div></div>`;
+ if(game==='scramble')return`<div class="card">${back}<h2>Word Scramble 🔤</h2><div id="wsb"></div></div>`;
+ if(game==='react')return`<div class="card">${back}<h2>Quick Paws ⚡</h2><div class="small">Tap when the box turns green. 3 rounds.</div><div id="rxb" onpointerdown="tapRx()" style="margin:10px 0;height:160px;border-radius:20px;background:#ffb3d4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;text-align:center;cursor:pointer;user-select:none">Tap to start 🐾</div></div>`;
+ if(game==='spin')return`<div class="card">${back}<h2>Lucky Spin 🎡</h2><div style="text-align:center"><div id="wheel" style="font-size:64px;margin:16px">🎁</div><button onclick="spin()">Spin!</button><div class="small" id="sres" style="margin-top:8px">${(D().plays||{}).spin?'You already spun today. Come back tomorrow! 💕':''}</div></div></div>`;
+},
+me(){return`<div class="card pet"><div style="font-size:30px;letter-spacing:6px">🐾🐾🐾</div>
+<div><span class="bubble" id="say">${S.name}: Look at all my diamonds! ✨</span></div>
+<div style="font-size:26px;font-weight:700;margin-top:8px">💎 <span id="gemcount">${S.gems}</span></div></div>
+<div class="card"><h2>Badges 🏅</h2>${BADGES.map(([e,n,f])=>`<div class="badge ${S.badges.includes(n)?'':'lock'}"><div class="e">${e}</div>${n}</div>`).join('')}</div>
+<div class="card"><h2>Dress-up shop 🛍️</h2>${SHOP.map(([e,n,p])=>`<div class="shop"><span>${e} ${n}</span>${S.owned.includes(e)?`<button class="${S.hat===e?'':'ghost'}" onclick="wear('${e}')">${S.hat===e?'Wearing':'Wear'}</button>`:`<button class="alt" onclick="buy('${e}',${p})">${p} 💎</button>`}</div>`).join('')}
+${S.hat?'<button class="ghost" onclick="wear(\'\')" style="margin-top:6px">Take off</button>':''}</div>
+<div class="card"><h2>Settings</h2><input id="pname" value="${S.name}"><button onclick="rename()" style="width:100%;margin-top:6px">Rename pet</button><button class="ghost" onclick="if(confirm('Erase all progress?')){localStorage.removeItem(KEY);location.reload()}" style="width:100%;margin-top:8px">Reset everything</button></div>`}
+};
+
+// ---------- actions ----------
+let selW=0,selF=[];
+function poke(){kSay(["Mrrp! 💕","You've got this!","Water break? 💧","Stretch time! 🤸‍♀️","Proud of you! 🌸","Purrrr... 🐾"][Math.random()*6|0])}
+
+// ---------- roaming kitten ----------
+const $k=id=>document.getElementById(id);
+const K={x:120,dir:1,mode:'rest',until:0,kind:'wander',tx:null,t:performance.now()};
+const B={x:260,y:0,vx:0,vy:0};
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const floorY=()=>$k('nav').offsetHeight-4;
+let sayT;
+function kSay(m){const e=$k('ksay');e.textContent=m;e.classList.add('on');clearTimeout(sayT);sayT=setTimeout(()=>e.classList.remove('on'),2200)}
+function kHat(){const h=$k('khat');h.textContent=S.hat||'';h.style.left=(K.dir>0?89:19)+'px'}
+function kMode(m,ms=0){K.mode=m;K.until=performance.now()+ms;const d=$k('kdance');d.className=m==='work'?'act':(m==='walk'||m==='pounce'||m==='dance'?m:'');
+  if(m!=='work')$k('kitty').removeAttribute('data-act');
+  if(m==='pounce'||m==='dance'){void d.offsetWidth;d.className=m}}
+function kDance(msg){kMode('dance',2800);kSay(msg||'Yay! 💃')}
+const ACTSAY={dance:'Dance party! 💃',yoga:'Namaste... 🧘',run:'Zoom zoom! 🏃‍♀️',walk:'Nice stroll 🚶‍♀️',strength:'Lift! 💪',cycle:'Pedal pedal! 🚴‍♀️',swim:'Splash! 🏊‍♀️',stretch:'Ahhh, stretchy 🤸‍♀️'};
+function kAct(say){if(K.mode!=='work')return;const n=WORKOUTS[selW][1].toLowerCase();$k('kitty').dataset.act=n;if(say)kSay(ACTSAY[n])}
+function kWork(){K.dir=1;$k('kflip').style.transform='scaleX(1)';kHat();kMode('work',1e12);kAct(true)}
+function kPick(){
+  if(tab==='move'){K.kind='gym';kMode('walk');return}
+  const f=[...document.querySelectorAll('.fall')].filter(e=>!e.dead);
+  if(f.length){K.kind='fall';return}
+  K.kind=Math.random()<.55?'ball':'wander';K.tx=K.kind==='wander'?70+Math.random()*(innerWidth-140):null;kMode('walk')}
+function kTarget(){
+  if(K.kind==='ball')return B.x+15;
+  if(K.kind==='fall'){let best=null;document.querySelectorAll('.fall').forEach(e=>{if(e.dead)return;const r=e.getBoundingClientRect();if(!best||r.bottom>best.bottom)best=r});
+    return best?best.left+best.width/2:(K.kind='wander',K.tx??K.x)}
+  if(K.kind==='gym')return innerWidth/2;
+  return K.tx}
+function tick(now){
+  const dt=Math.min(.05,(now-K.t)/1000);K.t=now;const W=innerWidth;
+  // yarn ball physics
+  B.vy-=900*dt;B.y+=B.vy*dt;B.x+=B.vx*dt;
+  if(B.y<=0){B.y=0;B.vy=Math.abs(B.vy)>60?-B.vy*.5:0;B.vx*=1-1.4*dt}
+  if(B.x<0){B.x=0;B.vx=Math.abs(B.vx)*.7}if(B.x>W-30){B.x=W-30;B.vx=-Math.abs(B.vx)*.7}
+  const b=$k('ball');b.style.bottom=(floorY()+B.y)+'px';b.style.transform=`translateX(${B.x}px) rotate(${B.x*2}deg)`;
+  // kitten brain
+  const want=tab==='move',kt=$k('kitty');
+  if(want!==!!K.fit){K.fit=want;kt.classList.toggle('fit',want);kSay(want?'Outfit change! ✨ Gym time 💪':'Back to cozy 🐾')}
+  if(!want&&K.mode==='work'){kPick();if(K.mode!=='walk')kMode('walk')}
+  if(want&&K.mode==='walk'&&K.kind!=='gym')K.kind='gym';
+  if(!calm){
+    if(K.mode==='walk'){
+      if(K.kind==='fall'||K.tx!=null||K.kind==='ball'||K.kind==='gym'){
+        const tx=kTarget(),dx=tx-K.x,run=K.kind==='wander'?85:150;
+        if(Math.abs(dx)>14){const nd=dx>0?1:-1;if(nd!==K.dir){K.dir=nd;$k('kflip').style.transform=`scaleX(${K.dir})`;kHat()}K.x+=nd*Math.min(Math.abs(dx),run*dt)}
+        else if(K.kind==='gym')kWork();
+        else if(K.kind==='ball'){if(B.y<40){B.vx=K.dir*(220+Math.random()*220);B.vy=260+Math.random()*220;kMode('pounce',520);kSay('MEOW! 🧶')}}
+        else if(K.kind==='fall'){kMode('pounce',520)}
+        else kMode('rest',1200+Math.random()*2200);
+      }
+    }else if(now>=K.until){kPick();if(K.mode!=='walk')kMode('walk')}
+  }
+  K.x=Math.max(70,Math.min(W-70,K.x));
+  const k=$k('kitty');k.style.bottom=(floorY()-6)+'px';k.style.transform=`translateX(${K.x-70}px)`;
+  requestAnimationFrame(tick)}
+$k('kdance').onclick=poke;
+$k('ball').onclick=()=>{B.vy=420;B.vx=(Math.random()-.5)*360;if(K.mode!=='dance'){K.kind='ball';kMode('walk')}};
+kHat();requestAnimationFrame(tick);
+// calories burned = MET x weight(kg) x hours (rough estimate)
+const MET={Dance:5,Yoga:2.5,Run:9.8,Walk:3.5,Strength:5,Cycle:7.5,Swim:6,Stretch:2.3};
+let selMin=20;
+const calBurn=(name,min)=>Math.round(MET[name]*(lastWeight()||140)*0.45359*min/60);
+function upCb(){const m=+document.getElementById('mins').value||0,w=WORKOUTS[selW],e=document.getElementById('cb');
+  if(e)e.textContent=`≈ ${calBurn(w[1],m)} cal burned`;
+  document.querySelectorAll('.cest').forEach((s,i)=>s.textContent='~'+calBurn(WORKOUTS[i][1],m)+' cal')}
+function logWorkout(){const m=+document.getElementById('mins').value;if(!(m>0))return toast('Enter minutes 💕');const w=WORKOUTS[selW];D().workouts.push({e:w[0],n:w[1],m,cal:calBurn(w[1],m)});award(Math.round(m*w[2]/4)+5,Math.floor(m/10),`${w[0]} ${w[1]}! ~${calBurn(w[1],m)} cal`);kDance('Great workout! 🔥')}
+function sip(i){const d=D();if(i<d.water){d.water=i;save();return render()}d.water=i+1;award(2,0,'💧 Sip!')}
+function togF(i){selF=selF.includes(i)?selF.filter(x=>x!==i):[...selF,i];const ids=['fname','fsv','fu','fp','fcb','ff','ffi','fcal'],v=ids.map(i=>document.getElementById(i).value);render();ids.forEach((i,k)=>document.getElementById(i).value=v[k])}
+// ---- macro estimator: built-in food list (per serving) + calorie split by food type ----
+// [name, serving, cal, protein, carbs, fat, fiber]
+const FOODDB=[['Egg','1 large',70,6,.5,5,0],['Scrambled eggs','2 eggs',180,12,2,14,0],['Chicken breast','4 oz cooked',185,35,0,4,0],['Salmon','4 oz',230,25,0,14,0],['Tuna','1 can',120,26,0,1,0],['Turkey slices','3 oz',90,15,3,2,0],['Ground beef','4 oz lean',220,24,0,14,0],['Steak','4 oz',250,30,0,14,0],['Shrimp','4 oz',112,24,1,1,0],['Tofu','4 oz',90,10,2,5,1],
+['Greek yogurt','1 cup plain',130,23,9,0,0],['Cottage cheese','1/2 cup',90,12,5,2.5,0],['Milk','1 cup',120,8,12,5,0],['Cheese','1 oz',110,7,.5,9,0],['Protein shake','1 scoop',120,24,3,1.5,1],['Protein bar','1 bar',200,20,22,7,3],
+['Banana','1 medium',105,1.3,27,.4,3],['Apple','1 medium',95,.5,25,.3,4.5],['Strawberries','1 cup',50,1,12,.5,3],['Blueberries','1 cup',85,1,21,.5,3.6],['Orange','1 medium',62,1.2,15,.2,3],['Grapes','1 cup',100,1,27,.2,1.4],['Avocado','1/2 fruit',120,1.5,6,11,5],
+['Broccoli','1 cup',55,4,11,.6,5],['Spinach','2 cups raw',14,2,2,0,1.3],['Side salad','1 bowl',50,2,8,1,3],['Carrots','1 cup',52,1.2,12,.3,3.6],['Sweet potato','1 medium',112,2,26,.1,4],['Potato','1 baked',160,4,37,.2,4],
+['White rice','1 cup cooked',205,4,45,.4,.6],['Brown rice','1 cup cooked',215,5,45,1.8,3.5],['Quinoa','1 cup cooked',220,8,39,3.5,5],['Oatmeal','1 cup cooked',160,6,28,3,4],['Bread','1 slice',80,3,14,1,1],['Toast','1 slice whole wheat',80,4,14,1,2],['Bagel','1 medium',270,10,53,1.5,2],['Pasta','1 cup cooked',220,8,43,1.3,2.5],['Tortilla','1 medium',140,4,24,3,1.5],
+['Black beans','1/2 cup',110,7,20,.5,7.5],['Lentils','1/2 cup',115,9,20,.4,8],['Hummus','2 tbsp',70,2,4,5,1],['Peanut butter','2 tbsp',190,7,7,16,2],['Almonds','1 oz',165,6,6,14,3.5],['Walnuts','1 oz',185,4,4,18,2],['Olive oil','1 tbsp',120,0,0,14,0],['Butter','1 tbsp',100,0,0,11,0],
+['Granola bar','1 bar',130,3,20,4,2],['Granola','1/2 cup',210,5,33,7,3.5],['Pizza','1 slice',285,12,36,10,2.5],['Burger','1 sandwich',500,25,40,26,2],['Fries','1 medium',365,4,48,17,4],['Chicken sandwich','1 sandwich',440,28,40,18,2],['Burrito','1 burrito',520,22,65,18,8],['Sushi roll','6 pieces',250,9,38,7,3],
+['Chocolate','1 oz',150,2,17,9,2],['Ice cream','1/2 cup',140,2,16,7,.5],['Cookie','1 cookie',150,2,20,7,1],['Donut','1 donut',250,3,30,14,1],['Chips','1 oz',150,2,15,10,1],['Soda','12 oz',140,0,39,0,0],['Latte','12 oz',150,8,12,8,0],['Coffee','1 cup black',2,0,0,0,0],['Wine','5 oz',125,0,4,0,0],['Smoothie','16 oz',250,5,52,3,5]];
+// share of calories from [protein, carbs, fat] and grams of fiber per 100 cal, for each food type chip
+const CATP=[[.20,.65,.15,4],[.05,.90,.05,3],[.55,.05,.40,0],[.10,.85,.05,1.5],[.05,.10,.85,.5],[.05,.50,.45,.5]];
+const r1=x=>Math.round(x*10)/10;
+function findFood(q){q=q.toLowerCase().trim();if(!q)return null;const q2=q.replace(/(es|s)$/,'');
+  const nm=f=>f[0].toLowerCase();
+  return FOODDB.find(f=>nm(f)===q||nm(f)===q2)||FOODDB.find(f=>q.includes(nm(f))||q2.includes(nm(f)))||FOODDB.find(f=>q.length>3&&nm(f).includes(q))||null}
+function estFor(name,cal,n){
+  const db=findFood(name);
+  if(db){const k=cal?cal/db[2]:n;return{cal:Math.round(db[2]*k),p:r1(db[3]*k),cb:r1(db[4]*k),f:r1(db[5]*k),fi:r1(db[6]*k),src:`${db[0]} (${db[1]})`}}
+  if(cal){const cs=selF.length?selF.map(i=>CATP[i]):[[.25,.45,.30,2]];
+    const a=[0,1,2,3].map(j=>cs.reduce((s,c)=>s+c[j],0)/cs.length);
+    return{cal,p:r1(cal*a[0]/4),cb:r1(cal*a[1]/4),f:r1(cal*a[2]/9),fi:r1(cal/100*a[3]),src:selF.length?'your food types':'a balanced split'}}
+  return null}
+function fillFood(e){const s=(id,v)=>document.getElementById(id).value=v;s('fcal',e.cal);s('fp',e.p);s('fcb',e.cb);s('ff',e.f);s('ffi',e.fi)}
+// typical weight of one serving in grams (used to convert grams/ounces)
+const GRAMS={Egg:50,'Scrambled eggs':100,'Chicken breast':113,Salmon:113,Tuna:113,'Turkey slices':85,'Ground beef':113,Steak:113,Shrimp:113,Tofu:113,'Greek yogurt':245,'Cottage cheese':113,Milk:244,Cheese:28,'Protein shake':30,'Protein bar':60,Banana:118,Apple:182,Strawberries:152,Blueberries:148,Orange:131,Grapes:151,Avocado:100,Broccoli:156,Spinach:60,'Side salad':150,Carrots:128,'Sweet potato':130,Potato:173,'White rice':158,'Brown rice':195,Quinoa:185,Oatmeal:234,Bread:28,Toast:30,Bagel:105,Pasta:140,Tortilla:45,'Black beans':86,Lentils:99,Hummus:30,'Peanut butter':32,Almonds:28,Walnuts:28,'Olive oil':14,Butter:14,'Granola bar':35,Granola:60,Pizza:107,Burger:220,Fries:117,'Chicken sandwich':200,Burrito:300,'Sushi roll':180,Chocolate:28,'Ice cream':66,Cookie:30,Donut:70,Chips:28,Soda:355,Latte:355,Coffee:240,Wine:148,Smoothie:480};
+// converts the amount + unit boxes into a number of servings for a known food
+function getN(name){const q=+document.getElementById('fsv').value||1,u=document.getElementById('fu').value,db=findFood(name);
+  if(!db||u==='sv')return q;const g=GRAMS[db[0]]||100;return u==='g'?q/g:q*28.3495/g}
+function unitChg(){const u=document.getElementById('fu').value;document.getElementById('fsv').value=u==='g'?100:u==='oz'?4:1;foodPick()}
+function foodPick(){const h=document.getElementById('fhint'),q=document.getElementById('fname').value,db=findFood(q);
+  if(!db){h.textContent=q.trim()?'Not in my list. Enter calories and tap Estimate, and I\'ll split them by food type.':'';return}
+  const n=getN(q),g=GRAMS[db[0]]||100;h.textContent=`${db[0]}: 1 serving = ${db[1]}, ~${g} g. Your amount ≈ ${Math.round(db[2]*n)} cal (${Math.round(g*n)} g). Tap Estimate to fill macros.`;
+  if(FOODDB.some(f=>f[0].toLowerCase()===q.toLowerCase().trim()))fillFood(estFor(q,0,n))}
+function estimate(){const q=document.getElementById('fname').value.trim(),cal=+document.getElementById('fcal').value||0,n=getN(q);
+  const e=estFor(q,cal,n);
+  if(!e)return toast('Enter calories or a known food 💕');fillFood(e);toast('Estimated from '+e.src+' ✨')}
+function logMeal(){const g=id=>+document.getElementById(id).value||0;const n=document.getElementById('fname').value.trim();if(!n)return toast('Name your food 💕');
+  let p=g('fp'),cb=g('fcb'),f=g('ff'),fi=g('ffi'),cal=g('fcal'),est=false;
+  if(!p&&!cb&&!f&&!fi){const e=estFor(n,cal,getN(n));if(e){cal=e.cal;p=e.p;cb=e.cb;f=e.f;fi=e.fi;est=true}}
+  if(!cal)cal=Math.round(p*4+cb*4+f*9);
+  const healthy=selF.filter(i=>i<5).length;const u=document.getElementById('fu').value,qv=g('fsv')||1,amt=u==='sv'?(qv!==1?qv+' serving(s)':''):qv+' '+u;D().meals.push({n,cal,p,cb,f,fi,t:selF,est,amt});const x=5+healthy*3+(p||cb||f?3:0);selF=[];award(x,healthy>=2?1:0,'🍽️ Logged!')}
+function delMeal(i){D().meals.splice(i,1);save();render()}
+function logWeight(){const w=+document.getElementById('wt').value;if(!(w>20&&w<1000))return toast('Enter a valid weight 💕');
+  const t=today(),e=S.weights.find(x=>x.d===t);if(e){e.w=w;save();toast('Updated ⚖️');return render()}
+  S.weights.push({d:t,w});award(8,1,'⚖️ Weigh-in!')}
+function saveProfile(){const v=id=>document.getElementById(id).value;S.profile={age:v('pa'),sex:v('ps'),ft:v('pf'),inch:v('pi'),act:+v('pact'),goal:+v('pg'),calOverride:v('pco')};save();toast('Targets updated 🎯');render()}
+function spark(){const w=S.weights.slice(-30);if(w.length<2)return'';const min=Math.min(...w.map(x=>x.w))-1,max=Math.max(...w.map(x=>x.w))+1;
+  const pts=w.map((x,i)=>`${i/(w.length-1)*300},${60-(x.w-min)/(max-min)*55}`).join(' ');
+  return`<svg viewBox="0 0 300 64" style="width:100%;margin:8px 0"><polyline points="${pts}" fill="none" stroke="#ff7eb6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><g class="prop p-swim"><path class="wave" d="M-20 74 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 V100 H-20Z" fill="#8fd3ff" opacity=".65"/></g>
+        <g class="prop p-dumb"><g class="db"><path d="M108 76 H136" stroke="#5a2a47" stroke-width="3.5" stroke-linecap="round"/><rect x="104" y="68" width="6" height="16" rx="2" fill="#7a3b5a"/><rect x="134" y="68" width="6" height="16" rx="2" fill="#7a3b5a"/></g></g>
+      </svg>`}
+function setMood(i){const d=D(),first=d.mood===null;d.mood=i;first?award(8,1,'💭 Checked in!'):(save(),render())}
+function saveGrat(){const v=document.getElementById('grat').value.trim();if(!v)return;const d=D(),first=!d.gratitude;d.gratitude=v;first?award(10,1,'📝 Lovely!'):(save(),toast('Saved 💌'))}
+let breathing=false;
+async function breathe(){if(breathing)return;breathing=true;const el=document.getElementById('breath');const w=ms=>new Promise(r=>setTimeout(r,ms));
+  for(let i=1;i<=3;i++){if(!document.getElementById('breath'))break;el.textContent='Breathe in...';el.style.transform='scale(1.5)';await w(4000);el.textContent='Breathe out...';el.style.transform='scale(1)';await w(4000)}
+  breathing=false;if(!document.getElementById('breath'))return;D().breath++;award(12,2,'🌬️ Calm!')}
+function buy(e,p){if(S.gems<p)return toast('Not enough 💎 yet!');S.gems-=p;S.owned.push(e);S.hat=e;save();toast('New look! 💖');render()}
+function wear(e){S.hat=e;save();render()}
+function rename(){S.name=document.getElementById('pname').value.trim()||'Bloom';save();toast('Saved 💕');render()}
+
+// ---------- games ----------
+let game=null;
+function rewardOK(k){const d=D();d.plays=d.plays||{};if((d.plays[k]||0)>=3)return false;d.plays[k]=(d.plays[k]||0)+1;d.games++;return true}
+function startGame(){({mm:startMM,catch:()=>{},trivia:()=>tv?drawTV():startTrivia(),bubble:startBubble,spin:()=>{},simon:()=>{},whack:()=>{},react:()=>{},scramble:()=>ws?drawWS():startWS()})[game]()}
+
+// heart catch
+let cT=null,cS=null;
+const GT=[];let wI=[];function later(fn,ms){const id=setTimeout(fn,ms);GT.push(id);return id}function clearGT(){GT.forEach(clearTimeout);GT.length=0}
+function stopCatch(){clearInterval(cT);clearInterval(cS);cT=cS=null;clearGT();wI.forEach(clearInterval);wI=[]}
+function startCatch(){stopCatch();const ar=document.getElementById('arena');ar.innerHTML='';let sc=0,t=20;
+  const upd=()=>{document.getElementById('csc').textContent='Score: '+sc;document.getElementById('ctm').textContent=t+'s'};upd();
+  cS=setInterval(()=>{const bad=Math.random()<.25,el=document.createElement('div');el.className='fall';el.textContent=bad?'🌧️':['💖','💗','🌸','⭐'][Math.random()*4|0];
+    el.style.left=Math.random()*(ar.clientWidth-44)+'px';el.style.animationDuration=(1.8+Math.random()*1.4)+'s';
+    el.onpointerdown=()=>{if(el.dead)return;el.dead=1;sc=Math.max(0,sc+(bad?-2:1));el.textContent=bad?'💥':'✨';upd();setTimeout(()=>el.remove(),150)};
+    el.onanimationend=()=>el.remove();ar.appendChild(el)},480);
+  cT=setInterval(()=>{t--;upd();if(t<=0){stopCatch();ar.innerHTML='';
+    if(rewardOK('catch'))award(5+sc,Math.min(6,Math.floor(sc/4)),`💖 Score ${sc}!`);else toast(`Score ${sc}! Rewards maxed for today 💕`)}},1000)}
+
+// trivia
+const QA=[["How much water is a common daily goal for adults?",["About 8 glasses","1 glass","20 glasses"],0],
+["Which nutrient helps you feel full and repair muscle?",["Protein","Sugar","Salt"],0],
+["Roughly how many hours of sleep do most adults need?",["4-5","7-9","12+"],1],
+["Which of these is a good source of fiber?",["Oats and beans","White soda","Butter"],0],
+["What does slow deep breathing help calm?",["Your stress response","Your bones","Your eyesight"],0],
+["How much moderate exercise per week is commonly recommended?",["15 minutes","About 150 minutes","10 hours"],1],
+["Which mineral helps keep bones strong?",["Calcium","Lead","Helium"],0],
+["Strength training can help build...",["Muscle and bone density","Taller height","Faster hair growth"],0],
+["Which habit often helps mood?",["Daylight and a walk","Skipping all meals","Staying up all night"],0],
+["Healthy fats are found in...",["Avocado and nuts","Motor oil","Candy"],0]];
+let tv;
+function startTrivia(){tv={q:[...QA].sort(()=>Math.random()-.5).slice(0,5),i:0,ok:0,lock:false};drawTV()}
+function drawTV(){const el=document.getElementById('tv');if(!el)return;
+  if(tv.i>=5){const ok=tv.ok;el.innerHTML=`<div style="text-align:center;font-size:20px;margin:12px">${ok}/5 correct ${ok>=4?'🌟':'💕'}</div><button onclick="startTrivia()" style="width:100%">Play again</button>`;
+    if(tv.paid)return;tv.paid=1;if(rewardOK('trivia'))award(ok*4,ok>=4?4:ok>=2?2:0,'🧠 Smarty!');else toast('Rewards maxed for today 💕');return}
+  const [q,o,a]=tv.q[tv.i];
+  const order=o.map((t,i)=>i);
+  el.innerHTML=`<div class="small">Question ${tv.i+1}/5</div><div style="font-weight:700;margin:6px 0">${q}</div>${o.map((t,i)=>`<button class="opt" onclick="ans(${i},this)">${t}</button>`).join('')}`}
+function ans(i,b){if(tv.lock)return;tv.lock=true;const a=tv.q[tv.i][2];const bs=document.querySelectorAll('.opt');bs[a].classList.add('good');if(i===a)tv.ok++;else b.classList.add('bad');
+  setTimeout(()=>{tv.i++;tv.lock=false;drawTV()},900)}
+
+// bubble pop
+let bb;
+function startBubble(){const n=[...Array(12)].map((_,i)=>i+1).sort(()=>Math.random()-.5);bb={n,next:1,t0:0,iv:null};
+  document.getElementById('bb').innerHTML=n.map(v=>`<div class="bub" id="b${v}" onclick="pop(${v})">${v}</div>`).join('');document.getElementById('bt').textContent='0.0s'}
+function pop(v){if(v!==bb.next)return;if(v===1){bb.t0=Date.now();bb.iv=setInterval(()=>{const e=document.getElementById('bt');if(e)e.textContent=((Date.now()-bb.t0)/1000).toFixed(1)+'s'},100)}
+  document.getElementById('b'+v).classList.add('gone');bb.next++;
+  if(v===12){clearInterval(bb.iv);const s=(Date.now()-bb.t0)/1000;document.getElementById('bt').textContent=s.toFixed(1)+'s';
+    if(rewardOK('bubble'))award(8,s<10?4:s<15?2:1,`🫧 ${s.toFixed(1)}s!`);else toast(`${s.toFixed(1)}s! Rewards maxed for today 💕`)}}
+
+// lucky spin
+function spin(){const d=D();d.plays=d.plays||{};if(d.plays.spin)return toast('Already spun today 💕');d.plays.spin=1;d.games++;
+  const P=[['💎 +2',0,2],['💎 +3',0,3],['💎 +5',0,5],['✨ +15 XP',15,0],['✨ +25 XP',25,0],['💎 +10',0,10],['💎 +1 ✨ +10 XP',10,1]];
+  const w=document.getElementById('wheel'),ic=['🎁','💎','✨','🌸','🍀','💖'];let n=0;
+  const iv=setInterval(()=>{w.textContent=ic[n++%ic.length]},90);
+  setTimeout(()=>{clearInterval(iv);const p=P[Math.random()*P.length|0];w.textContent='🎉';const r=document.getElementById('sres');if(r)r.textContent='You won '+p[0]+'!';award(p[1],p[2],'🎡 '+p[0])},1800)}
+
+// sparkle sequence (Simon)
+const SC=['#ff7eb6','#8fd3ff','#ffd166','#a8ecd0'];let sm;
+const smMsg=t=>{const e=document.getElementById('smmsg');if(e)e.textContent=t};
+function flashPad(i){const e=document.getElementById('sp'+i);if(!e)return;e.classList.add('lit');later(()=>e.classList.remove('lit'),350)}
+function startSimon(){stopCatch();sm={seq:[],i:0,play:false,score:0};nextSimon()}
+function nextSimon(){sm.seq.push(Math.random()*4|0);sm.i=0;sm.play=false;smMsg('Watch... Round '+sm.seq.length);let t=600;sm.seq.forEach(s=>{later(()=>flashPad(s),t);t+=600});later(()=>{sm.play=true;smMsg('Your turn!')},t)}
+function tapSimon(i){if(!sm||!sm.play)return;flashPad(i);
+  if(i!==sm.seq[sm.i]){sm.play=false;smMsg('Oops! Reached round '+(sm.score+1));if(rewardOK('simon'))award(5+sm.score*2,Math.min(6,Math.floor(sm.score/2)),'🎵 Round '+(sm.score+1));else toast('Rewards maxed for today 💕');return}
+  sm.i++;if(sm.i===sm.seq.length){sm.score=sm.seq.length;sm.play=false;smMsg('Nice! 💕');later(nextSimon,800)}}
+
+// whack-a-mouse
+let wh;
+function startWhack(){stopCatch();wh={s:0,t:20,up:-1,bad:false};
+  const upd=()=>{const a=document.getElementById('whs'),b=document.getElementById('wht');if(a)a.textContent='Score: '+wh.s;if(b)b.textContent=wh.t+'s'};upd();
+  document.querySelectorAll('[id^=wc]').forEach(e=>e.textContent='🕳️');
+  const hide=i=>{const e=document.getElementById('wc'+i);if(e)e.textContent='🕳️'};
+  wI.push(setInterval(()=>{if(wh.up>=0)hide(wh.up);const i=Math.random()*9|0;wh.up=i;wh.bad=Math.random()<.2;const e=document.getElementById('wc'+i);if(e)e.textContent=wh.bad?'🐶':'🐭';later(()=>{if(wh.up===i){hide(i);wh.up=-1}},650)},780));
+  wI.push(setInterval(()=>{wh.t--;upd();if(wh.t<=0){const s=wh.s;stopCatch();if(rewardOK('whack'))award(5+s,Math.min(6,Math.floor(s/3)),`🐭 Score ${s}!`);else toast(`Score ${s}! Rewards maxed for today 💕`)}},1000))}
+function tapWhack(i){if(!wh||wh.up!==i)return;wh.s=Math.max(0,wh.s+(wh.bad?-2:1));const e=document.getElementById('wc'+i);if(e)e.textContent=wh.bad?'💥':'✨';wh.up=-1;const a=document.getElementById('whs');if(a)a.textContent='Score: '+wh.s}
+
+// word scramble
+const WORDS=['PROTEIN','WATER','YOGA','STRETCH','BREATHE','SLEEP','FIBER','CARDIO','SMOOTHIE','HYDRATE','BALANCE','ENERGY','STRENGTH','MINDFUL','GRATEFUL','SPRINT','SALAD','WALKING'];
+let ws;
+const shuf=w=>{let s=w;for(let k=0;k<20&&s===w;k++)s=[...w].sort(()=>Math.random()-.5).join('');return s};
+function startWS(){ws={w:[...WORDS].sort(()=>Math.random()-.5).slice(0,5),i:0,ok:0,paid:false};drawWS()}
+function drawWS(){const el=document.getElementById('wsb');if(!el)return;
+  if(ws.i>=5){el.innerHTML=`<div style="text-align:center;font-size:20px;margin:12px">${ws.ok}/5 solved ${ws.ok>=4?'🌟':'💕'}</div><button onclick="startWS()" style="width:100%">Play again</button>`;
+    if(ws.paid)return;ws.paid=true;if(rewardOK('scramble'))award(ws.ok*4,ws.ok>=4?4:ws.ok>=2?2:0,'🔤 Word wiz!');else toast('Rewards maxed for today 💕');return}
+  const w=ws.w[ws.i];ws.sc=ws.sc&&ws.sc.w===w?ws.sc:{w,s:shuf(w)};
+  el.innerHTML=`<div class="small">Word ${ws.i+1}/5 · hint: starts with ${w[0]}</div><div style="font-size:30px;letter-spacing:6px;text-align:center;font-weight:700;margin:14px 0">${ws.sc.s}</div><input id="wsin" placeholder="Your answer" autocomplete="off" onkeydown="if(event.key==='Enter')checkWS()"><div class="row" style="margin-top:6px"><button onclick="checkWS()" style="flex:1">Check</button><button class="ghost" onclick="ws.i++;drawWS()">Skip</button></div>`;
+  document.getElementById('wsin').focus()}
+function checkWS(){const v=document.getElementById('wsin').value.trim().toUpperCase();if(!v)return;
+  if(v===ws.w[ws.i]){ws.ok++;ws.i++;toast('Yes! ✨');drawWS()}else toast('Not quite, try again 💕')}
+
+// quick paws (reaction)
+let rx;
+function startRx(){stopCatch();rx={times:[],state:'idle'};nextRx()}
+function nextRx(){const el=document.getElementById('rxb');rx.state='wait';el.textContent='Wait for green... 🐾';el.style.background='#ffb3d4';
+  later(()=>{if(!rx)return;rx.state='go';rx.t0=performance.now();el.textContent='TAP!';el.style.background='#7be0a8'},1000+Math.random()*3000)}
+function tapRx(){const el=document.getElementById('rxb');if(!rx||rx.state==='done'){startRx();return}
+  if(rx.state==='wait'){clearGT();rx.state='idle';el.textContent='Too soon! Tap to retry 🙈';el.style.background='#ffd0d0';return}
+  if(rx.state==='idle'){nextRx();return}
+  if(rx.state==='go'){const ms=Math.round(performance.now()-rx.t0);rx.times.push(ms);
+    if(rx.times.length<3){rx.state='idle';el.textContent=`${ms} ms! Tap for next round`;el.style.background='#fff0b3';return}
+    const avg=Math.round(rx.times.reduce((a,b)=>a+b)/3);rx.state='done';el.innerHTML=`Average ${avg} ms ${avg<350?'🔥':'💕'}<br><span style="font-size:14px">Tap to play again</span>`;el.style.background='#e6dbff';
+    if(rewardOK('react'))award(8,avg<350?4:avg<500?2:1,`⚡ ${avg} ms!`);else toast('Rewards maxed for today 💕')}}
+
+// memory game
+let mm;
+function startMM(){const em=['🌸','🍓','🦋','💖','🧁','🌈','⭐','🍑'];mm={cards:[...em,...em].sort(()=>Math.random()-.5).map(e=>({e,s:'d'})),open:[],moves:0,lock:false};drawMM()}
+function drawMM(){const g=document.getElementById('mm');if(!g)return;g.innerHTML=mm.cards.map((c,i)=>`<div class="tile ${c.s==='o'?'up':c.s==='m'?'ok':''}" onclick="flip(${i})">${c.s==='d'?'❔':c.e}</div>`).join('');document.getElementById('mv').textContent='Moves: '+mm.moves}
+function flip(i){if(mm.lock||mm.cards[i].s!=='d')return;mm.cards[i].s='o';mm.open.push(i);drawMM();
+  if(mm.open.length===2){mm.moves++;const[a,b]=mm.open;mm.open=[];
+    if(mm.cards[a].e===mm.cards[b].e){mm.cards[a].s=mm.cards[b].s='m';drawMM();
+      if(mm.cards.every(c=>c.s==='m')){const d=D();if(rewardOK('mm')){const g=Math.max(1,Math.min(6,Math.round(26-mm.moves)/3|0));award(10,g,'🃏 Match!')}else toast('Cleared! Come back tomorrow for more rewards 💕')}}
+    else{mm.lock=true;drawMM();setTimeout(()=>{mm.cards[a].s=mm.cards[b].s='d';mm.lock=false;drawMM()},800)}}}
+
+// ---------- render ----------
+let lastTab=null;
+function render(){
+  if(tab==='me'&&lastTab!=='me')setTimeout(kDance,0);lastTab=tab;
+  if(typeof kHat==='function')kHat();
+  setTimeout(()=>{if(tab==='move')upCb();if(typeof kAct==='function')kAct()},0);
+  document.getElementById('app').innerHTML=hdr()+views[tab]();
+  document.getElementById('nav').innerHTML=TABS.map(([k,e,n])=>`<button class="${k===tab?'on':''}" onclick="tab='${k}';render()"><span>${e}</span>${n}</button>`).join('');
+  stopCatch();if(tab==='play'&&game)startGame();
+}
+render();
+</script>
+</body>
+</html>
