@@ -2,3 +2,4 @@
 *.lnk
 make_icon.ps1
 publish.ps1
+Publish.cmd
